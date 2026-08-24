@@ -50,6 +50,14 @@ CREATE TABLE IF NOT EXISTS ItensOS (
     Valor NUMERIC(10,2) NOT NULL DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS Despesas (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Descricao TEXT NOT NULL,
+    Categoria TEXT,
+    Valor NUMERIC(10,2) NOT NULL DEFAULT 0,
+    DataDespesa DATETIME NOT NULL DEFAULT (datetime('now','localtime'))
+);
+
 -- Carga inicial de dados para testes
 -- Senha do admin: admin123 (hash SHA256 abaixo)
 INSERT INTO Usuarios (Login, Senha, NomeCompleto)
@@ -64,3 +72,7 @@ INSERT INTO Servicos (Descricao, ValorPadrao) VALUES
 INSERT INTO Clientes (Nome, Telefone, Email, Endereco) VALUES
 ('João Silva', '(11) 98888-7777', 'joao@email.com', 'Rua das Flores, 123'),
 ('Maria Oliveira', '(11) 97777-6666', 'maria@email.com', 'Av. Paulista, 1000');
+
+INSERT INTO Despesas (Descricao, Categoria, Valor) VALUES
+('Aluguel do box', 'Fixa', 1200.00),
+('Compra de HD 1TB', 'Compra de peças', 289.90);

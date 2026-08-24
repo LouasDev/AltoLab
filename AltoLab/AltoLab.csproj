@@ -67,11 +67,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Database\ConexaoBD.cs" />
     <Compile Include="DAO\ClienteDAO.cs" />
+    <Compile Include="DAO\DespesaDAO.cs" />
     <Compile Include="DAO\OrdemServicoDAO.cs" />
     <Compile Include="DAO\ServicoDAO.cs" />
     <Compile Include="DAO\UsuarioDAO.cs" />
     <Compile Include="Forms\FrmCadastroOS.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmCadastroOS.Designer.cs">
+      <DependentUpon>FrmCadastroOS.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmClientes.cs">
       <SubType>Form</SubType>
@@ -81,6 +85,21 @@
     </Compile>
     <Compile Include="Forms\FrmConsultaOS.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmConsultaOS.Designer.cs">
+      <DependentUpon>FrmConsultaOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDashboard.Designer.cs">
+      <DependentUpon>FrmDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmDespesas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDespesas.Designer.cs">
+      <DependentUpon>FrmDespesas.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmLogin.cs">
       <SubType>Form</SubType>
@@ -97,7 +116,12 @@
     <Compile Include="Forms\FrmServicos.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\FrmServicos.Designer.cs">
+      <DependentUpon>FrmServicos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Cliente.cs" />
+    <Compile Include="Models\DashboardMetricas.cs" />
+    <Compile Include="Models\Despesa.cs" />
     <Compile Include="Models\ItemOS.cs" />
     <Compile Include="Models\OrdemServico.cs" />
     <Compile Include="Models\Servico.cs" />

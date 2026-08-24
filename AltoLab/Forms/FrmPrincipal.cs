@@ -58,6 +58,16 @@ namespace AltoLab.Forms
             AbrirFormulario<FrmConsultaOS>("Consulta de Ordens de Serviço");
         }
 
+        private void BtnDashboard_Click(object sender, EventArgs e)
+        {
+            AbrirFormulario<FrmDashboard>("Painel de Controle");
+        }
+
+        private void BtnDespesas_Click(object sender, EventArgs e)
+        {
+            AbrirFormulario<FrmDespesas>("Controle de Despesas");
+        }
+
         private void BtnLogout_Click(object sender, EventArgs e)
         {
             DialogResult confirmacao = MessageBox.Show(

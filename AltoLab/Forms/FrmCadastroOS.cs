@@ -1,31 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Windows.Forms;
 using AltoLab.DAO;
 using AltoLab.Models;
-using AltoLab.Utils;
 
 namespace AltoLab.Forms
 {
-    public class FrmCadastroOS : Form
+    public partial class FrmCadastroOS : Form
     {
         private readonly int osIdEdicao; // 0 = nova OS
 
-        private readonly ComboBox cboCliente = new ComboBox();
-        private readonly TextBox txtEquipamento = new TextBox();
-        private readonly TextBox txtProblema = new TextBox();
-        private readonly ComboBox cboStatus = new ComboBox();
-        private readonly ComboBox cboServico = new ComboBox();
-        private readonly TextBox txtValorServico = new TextBox();
-        private readonly DataGridView gridItens = new DataGridView();
         private readonly DataTable tabelaItens = new DataTable();
-        private readonly Label lblTotal = new Label();
-        private readonly Button btnAdicionarItem = new Button();
-        private readonly Button btnRemoverItem = new Button();
-        private readonly Button btnSalvar = new Button();
-        private readonly Button btnCancelar = new Button();
 
         public FrmCadastroOS() : this(0)
         {
@@ -33,8 +19,17 @@ namespace AltoLab.Forms
 
         public FrmCadastroOS(int idOrdemServicoParaEditar)
         {
+            InitializeComponent();
+
             osIdEdicao = idOrdemServicoParaEditar;
-            MontarTela();
+
+            // Título depende do modo (novo x edição) — definido em runtime
+            if (osIdEdicao > 0)
+            {
+                Text = "Editar OS nº " + osIdEdicao + " — AltoLab";
+                lblTituloTela.Text = "Editar Ordem de Serviço nº " + osIdEdicao;
+            }
+
             CarregarClientes();
             CarregarServicos();
             ConfigurarTabelaItens();
@@ -43,113 +38,6 @@ namespace AltoLab.Forms
             {
                 CarregarOrdemServico(osIdEdicao);
             }
-        }
-
-        private void MontarTela()
-        {
-            EstiloUI.EstilizarForm(this);
-            Text = (osIdEdicao > 0 ? "Editar OS nº " + osIdEdicao : "Nova Ordem de Serviço") + " — AltoLab";
-            Size = new Size(920, 620);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-
-            Label lblTituloTela = new Label
-            {
-                Text = osIdEdicao > 0 ? "Editar Ordem de Serviço nº " + osIdEdicao : "Nova Ordem de Serviço",
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
-                ForeColor = EstiloUI.CorNavyEscuro,
-                AutoSize = true,
-                Location = new Point(20, 15)
-            };
-
-            // --- Coluna esquerda: dados da OS ---
-            Label lblCliente = new Label { Text = "Cliente (*):", AutoSize = true, Location = new Point(25, 60) };
-            cboCliente.SetBounds(25, 80, 400, 26);
-            cboCliente.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            Label lblEquipamento = new Label { Text = "Equipamento (*):", AutoSize = true, Location = new Point(25, 120) };
-            txtEquipamento.SetBounds(25, 140, 400, 26);
-
-            Label lblProblema = new Label { Text = "Problema Relatado (*):", AutoSize = true, Location = new Point(25, 180) };
-            txtProblema.SetBounds(25, 200, 400, 70);
-            txtProblema.Multiline = true;
-
-            Label lblStatus = new Label { Text = "Status:", AutoSize = true, Location = new Point(25, 285) };
-            cboStatus.SetBounds(25, 305, 200, 26);
-            cboStatus.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatus.Items.AddRange(new object[] { "Aberta", "Em andamento", "Concluída", "Entregue" });
-            cboStatus.SelectedIndex = 0;
-            cboStatus.SelectedIndexChanged += CboStatus_SelectedIndexChanged;
-
-            // --- Coluna direita: serviços da OS ---
-            GroupBox grpItens = new GroupBox
-            {
-                Text = "Serviços da OS",
-                Location = new Point(450, 50),
-                Size = new Size(440, 160)
-            };
-
-            Label lblServico = new Label { Text = "Serviço:", AutoSize = true, Location = new Point(15, 28) };
-            cboServico.SetBounds(15, 48, 300, 26);
-            cboServico.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboServico.SelectedIndexChanged += CboServico_SelectedIndexChanged;
-
-            Label lblValorServico = new Label { Text = "Valor (R$):", AutoSize = true, Location = new Point(325, 32) };
-            txtValorServico.SetBounds(325, 48, 95, 26);
-            txtValorServico.TextAlign = HorizontalAlignment.Right;
-            txtValorServico.KeyPress += TxtValorServico_KeyPress;
-
-            btnAdicionarItem.Text = "+ Adicionar";
-            btnAdicionarItem.SetBounds(15, 88, 130, 34);
-            EstiloUI.EstilizarBotaoPrimario(btnAdicionarItem);
-            btnAdicionarItem.Click += BtnAdicionarItem_Click;
-
-            btnRemoverItem.Text = "- Remover Selecionado";
-            btnRemoverItem.SetBounds(155, 88, 190, 34);
-            EstiloUI.EstilizarBotaoPerigo(btnRemoverItem);
-            btnRemoverItem.Click += BtnRemoverItem_Click;
-
-            grpItens.Controls.AddRange(new Control[]
-            {
-                lblServico, cboServico, lblValorServico, txtValorServico, btnAdicionarItem, btnRemoverItem
-            });
-
-            // --- Grid de itens ---
-            EstiloUI.EstilizarGrid(gridItens);
-            gridItens.Location = new Point(450, 220);
-            gridItens.Size = new Size(440, 170);
-
-            // --- Rodapé: total e botões ---
-            lblTotal.Text = "VALOR TOTAL: R$ 0,00";
-            lblTotal.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblTotal.ForeColor = EstiloUI.CorCyanAltoLab;
-            lblTotal.SetBounds(450, 400, 440, 30);
-            lblTotal.TextAlign = ContentAlignment.MiddleRight;
-
-            btnSalvar.Text = "SALVAR ORDEM DE SERVIÇO";
-            btnSalvar.SetBounds(450, 445, 440, 46);
-            EstiloUI.EstilizarBotaoPrimario(btnSalvar);
-            btnSalvar.Click += BtnSalvar_Click;
-
-            btnCancelar.Text = "Cancelar";
-            btnCancelar.SetBounds(25, 510, 200, 42);
-            EstiloUI.EstilizarBotaoSecundario(btnCancelar);
-            btnCancelar.Click += (s, e) => Close();
-
-            Controls.Add(lblTituloTela);
-            Controls.Add(lblCliente);
-            Controls.Add(cboCliente);
-            Controls.Add(lblEquipamento);
-            Controls.Add(txtEquipamento);
-            Controls.Add(lblProblema);
-            Controls.Add(txtProblema);
-            Controls.Add(lblStatus);
-            Controls.Add(cboStatus);
-            Controls.Add(grpItens);
-            Controls.Add(gridItens);
-            Controls.Add(lblTotal);
-            Controls.Add(btnSalvar);
-            Controls.Add(btnCancelar);
         }
 
         private void CarregarClientes()
@@ -265,15 +153,7 @@ namespace AltoLab.Forms
             tabelaItens.Columns.Add("Descricao", typeof(string));
             tabelaItens.Columns.Add("Valor", typeof(decimal));
 
-            gridItens.DataSource = tabelaItens;
-
-            gridItens.Columns["ServicoId"].Visible = false;
-            gridItens.Columns["Descricao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            gridItens.Columns["Descricao"].HeaderText = "Serviço";
-            gridItens.Columns["Valor"].Width = 120;
-            gridItens.Columns["Valor"].HeaderText = "Valor";
-            gridItens.Columns["Valor"].DefaultCellStyle.Format = "C2";
-            gridItens.Columns["Valor"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvItensOS.DataSource = tabelaItens;
         }
 
         private void BtnAdicionarItem_Click(object sender, EventArgs e)
@@ -311,14 +191,14 @@ namespace AltoLab.Forms
 
         private void BtnRemoverItem_Click(object sender, EventArgs e)
         {
-            if (gridItens.CurrentRow == null)
+            if (dgvItensOS.CurrentRow == null)
             {
                 MessageBox.Show("Selecione um item no grid para remover.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            DataGridViewRow linha = gridItens.CurrentRow;
-            gridItens.EndEdit();
+            DataGridViewRow linha = dgvItensOS.CurrentRow;
+            dgvItensOS.EndEdit();
             DataRowView drv = linha.DataBoundItem as DataRowView;
             if (drv != null)
             {
@@ -454,6 +334,11 @@ namespace AltoLab.Forms
             OrdemServicoDAO dao = new OrdemServicoDAO();
             OrdemServico original = dao.BuscarPorId(id);
             return original != null ? original.DataAbertura : DateTime.Now;
+        }
+
+        private void BtnCancelar_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

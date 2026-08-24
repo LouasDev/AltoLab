@@ -34,6 +34,8 @@
             this.btnServicos = new System.Windows.Forms.Button();
             this.btnNovaOS = new System.Windows.Forms.Button();
             this.btnConsultaOS = new System.Windows.Forms.Button();
+            this.btnDashboard = new System.Windows.Forms.Button();
+            this.btnDespesas = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -122,6 +124,38 @@
             this.btnConsultaOS.UseVisualStyleBackColor = false;
             this.btnConsultaOS.Click += new System.EventHandler(this.BtnConsultaOS_Click);
             // 
+            // btnDashboard
+            // 
+            this.btnDashboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
+            this.btnDashboard.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDashboard.FlatAppearance.BorderSize = 0;
+            this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnDashboard.ForeColor = System.Drawing.Color.White;
+            this.btnDashboard.Location = new System.Drawing.Point(80, 396);
+            this.btnDashboard.Name = "btnDashboard";
+            this.btnDashboard.Size = new System.Drawing.Size(400, 52);
+            this.btnDashboard.TabIndex = 6;
+            this.btnDashboard.Text = "📊  PAINEL DE CONTROLE";
+            this.btnDashboard.UseVisualStyleBackColor = false;
+            this.btnDashboard.Click += new System.EventHandler(this.BtnDashboard_Click);
+            // 
+            // btnDespesas
+            // 
+            this.btnDespesas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
+            this.btnDespesas.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDespesas.FlatAppearance.BorderSize = 0;
+            this.btnDespesas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDespesas.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnDespesas.ForeColor = System.Drawing.Color.White;
+            this.btnDespesas.Location = new System.Drawing.Point(80, 460);
+            this.btnDespesas.Name = "btnDespesas";
+            this.btnDespesas.Size = new System.Drawing.Size(400, 52);
+            this.btnDespesas.TabIndex = 7;
+            this.btnDespesas.Text = "💰  CONTROLE DE DESPESAS";
+            this.btnDespesas.UseVisualStyleBackColor = false;
+            this.btnDespesas.Click += new System.EventHandler(this.BtnDespesas_Click);
+            // 
             // btnLogout
             // 
             this.btnLogout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
@@ -130,10 +164,10 @@
             this.btnLogout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnLogout.ForeColor = System.Drawing.Color.White;
-            this.btnLogout.Location = new System.Drawing.Point(80, 410);
+            this.btnLogout.Location = new System.Drawing.Point(80, 524);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(400, 46);
-            this.btnLogout.TabIndex = 6;
+            this.btnLogout.TabIndex = 8;
             this.btnLogout.Text = "SAIR (LOGOUT)";
             this.btnLogout.UseVisualStyleBackColor = false;
             this.btnLogout.Click += new System.EventHandler(this.BtnLogout_Click);
@@ -143,13 +177,15 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
-            this.ClientSize = new System.Drawing.Size(560, 560);
+            this.ClientSize = new System.Drawing.Size(560, 590);
             this.Controls.Add(this.lblTitulo);
             this.Controls.Add(this.lblUsuario);
             this.Controls.Add(this.btnClientes);
             this.Controls.Add(this.btnServicos);
             this.Controls.Add(this.btnNovaOS);
             this.Controls.Add(this.btnConsultaOS);
+            this.Controls.Add(this.btnDashboard);
+            this.Controls.Add(this.btnDespesas);
             this.Controls.Add(this.btnLogout);
             this.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -168,6 +204,8 @@
         private System.Windows.Forms.Button btnServicos;
         private System.Windows.Forms.Button btnNovaOS;
         private System.Windows.Forms.Button btnConsultaOS;
+        private System.Windows.Forms.Button btnDashboard;
+        private System.Windows.Forms.Button btnDespesas;
         private System.Windows.Forms.Button btnLogout;
     }
 }

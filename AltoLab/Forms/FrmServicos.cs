@@ -1,126 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Windows.Forms;
 using AltoLab.DAO;
 using AltoLab.Models;
-using AltoLab.Utils;
 
 namespace AltoLab.Forms
 {
-    public class FrmServicos : Form
+    public partial class FrmServicos : Form
     {
         private int servicoSelecionadoId;
 
-        private readonly TextBox txtDescricao = new TextBox();
-        private readonly TextBox txtValor = new TextBox();
-        private readonly TextBox txtBusca = new TextBox();
-        private readonly DataGridView grid = new DataGridView();
-        private readonly Button btnNovo = new Button();
-        private readonly Button btnSalvar = new Button();
-        private readonly Button btnExcluir = new Button();
-        private readonly Button btnLimpar = new Button();
-
         public FrmServicos()
         {
-            MontarTela();
+            InitializeComponent();
             CarregarGrid();
             LimparCampos();
-        }
-
-        private void MontarTela()
-        {
-            EstiloUI.EstilizarForm(this);
-            Text = "Cadastro de Serviços — AltoLab";
-            Size = new Size(900, 560);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-
-            Label lblTituloTela = new Label
-            {
-                Text = "Cadastro de Serviços",
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
-                ForeColor = EstiloUI.CorNavyEscuro,
-                AutoSize = true,
-                Location = new Point(20, 15)
-            };
-
-            Label lblBusca = new Label { Text = "Buscar por descrição:", AutoSize = true, Location = new Point(430, 55) };
-            txtBusca.SetBounds(565, 51, 299, 26);
-            txtBusca.TextChanged += (s, e) => CarregarGrid(txtBusca.Text);
-
-            GroupBox grpForm = new GroupBox
-            {
-                Text = "Dados do Serviço",
-                Location = new Point(20, 90),
-                Size = new Size(360, 220)
-            };
-
-            Label lblDescricao = new Label { Text = "Descrição (*):", AutoSize = true, Location = new Point(15, 35) };
-            txtDescricao.SetBounds(15, 55, 325, 26);
-
-            Label lblValor = new Label { Text = "Valor Padrão (R$) (*):", AutoSize = true, Location = new Point(15, 95) };
-            txtValor.SetBounds(15, 115, 160, 26);
-            txtValor.TextAlign = HorizontalAlignment.Right;
-            txtValor.KeyPress += TxtValor_KeyPress;
-
-            grpForm.Controls.AddRange(new Control[] { lblDescricao, txtDescricao, lblValor, txtValor });
-
-            btnNovo.Text = "Novo";
-            btnNovo.SetBounds(20, 340, 82, 38);
-            EstiloUI.EstilizarBotaoSecundario(btnNovo);
-            btnNovo.Click += (s, e) => LimparCampos();
-
-            btnSalvar.Text = "Salvar";
-            btnSalvar.SetBounds(112, 340, 82, 38);
-            EstiloUI.EstilizarBotaoPrimario(btnSalvar);
-            btnSalvar.Click += BtnSalvar_Click;
-
-            btnExcluir.Text = "Excluir";
-            btnExcluir.SetBounds(204, 340, 82, 38);
-            EstiloUI.EstilizarBotaoPerigo(btnExcluir);
-            btnExcluir.Click += BtnExcluir_Click;
-
-            btnLimpar.Text = "Limpar";
-            btnLimpar.SetBounds(296, 340, 84, 38);
-            btnLimpar.FlatStyle = FlatStyle.Flat;
-            btnLimpar.Click += (s, e) => LimparCampos();
-
-            EstiloUI.EstilizarGrid(grid);
-            grid.Location = new Point(400, 85);
-            grid.Size = new Size(464, 363);
-            grid.CellClick += Grid_CellClick;
-
-            Controls.Add(lblTituloTela);
-            Controls.Add(lblBusca);
-            Controls.Add(txtBusca);
-            Controls.Add(grpForm);
-            Controls.Add(btnNovo);
-            Controls.Add(btnSalvar);
-            Controls.Add(btnExcluir);
-            Controls.Add(btnLimpar);
-            Controls.Add(grid);
-        }
-
-        private void TxtValor_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // Permite apenas dígitos, vírgula e ponto (converte depois para decimal)
-            bool teclaValida = char.IsControl(e.KeyChar) || char.IsDigit(e.KeyChar) || e.KeyChar == ',' || e.KeyChar == '.';
-            if (!teclaValida)
-            {
-                e.Handled = true;
-                return;
-            }
-            // Converte ponto digitado em vírgula
-            if (e.KeyChar == '.')
-            {
-                e.KeyChar = ',';
-            }
-            // Impede mais de uma vírgula
-            if (e.KeyChar == ',' && txtValor.Text.Contains(","))
-            {
-                e.Handled = true;
-            }
         }
 
         private void CarregarGrid(string filtro = "")
@@ -128,7 +23,7 @@ namespace AltoLab.Forms
             try
             {
                 ServicoDAO dao = new ServicoDAO();
-                System.Collections.Generic.List<Servico> servicos = dao.ListarTodos(filtro);
+                List<Servico> servicos = dao.ListarTodos(filtro);
 
                 DataTable tabela = new DataTable();
                 tabela.Columns.Add("Id", typeof(int));
@@ -140,25 +35,7 @@ namespace AltoLab.Forms
                     tabela.Rows.Add(sv.Id, sv.Descricao, sv.ValorPadrao);
                 }
 
-                grid.DataSource = tabela;
-
-                if (grid.Columns["Id"] != null)
-                {
-                    grid.Columns["Id"].Visible = false;
-                    grid.Columns["Id"].HeaderText = "Código";
-                }
-                if (grid.Columns["Descricao"] != null)
-                {
-                    grid.Columns["Descricao"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    grid.Columns["Descricao"].HeaderText = "Descrição";
-                }
-                if (grid.Columns["ValorPadrao"] != null)
-                {
-                    grid.Columns["ValorPadrao"].Width = 120;
-                    grid.Columns["ValorPadrao"].HeaderText = "Valor Padrão";
-                    grid.Columns["ValorPadrao"].DefaultCellStyle.Format = "C2";
-                    grid.Columns["ValorPadrao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                }
+                dgvServicos.DataSource = tabela;
             }
             catch (Exception ex)
             {
@@ -192,6 +69,42 @@ namespace AltoLab.Forms
             }
 
             return true;
+        }
+
+        private void TxtBusca_TextChanged(object sender, EventArgs e)
+        {
+            CarregarGrid(txtBusca.Text);
+        }
+
+        private void BtnNovo_Click(object sender, EventArgs e)
+        {
+            LimparCampos();
+        }
+
+        private void BtnLimpar_Click(object sender, EventArgs e)
+        {
+            LimparCampos();
+        }
+
+        private void TxtValor_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Permite apenas dígitos, vírgula e ponto (converte depois para decimal)
+            bool teclaValida = char.IsControl(e.KeyChar) || char.IsDigit(e.KeyChar) || e.KeyChar == ',' || e.KeyChar == '.';
+            if (!teclaValida)
+            {
+                e.Handled = true;
+                return;
+            }
+            // Converte ponto digitado em vírgula
+            if (e.KeyChar == '.')
+            {
+                e.KeyChar = ',';
+            }
+            // Impede mais de uma vírgula
+            if (e.KeyChar == ',' && txtValor.Text.Contains(","))
+            {
+                e.Handled = true;
+            }
         }
 
         private void BtnSalvar_Click(object sender, EventArgs e)
@@ -270,7 +183,7 @@ namespace AltoLab.Forms
 
             try
             {
-                DataGridViewRow linha = grid.Rows[e.RowIndex];
+                DataGridViewRow linha = dgvServicos.Rows[e.RowIndex];
                 object valorId = linha.Cells["Id"].Value;
                 if (valorId == null || valorId == DBNull.Value) return;
 

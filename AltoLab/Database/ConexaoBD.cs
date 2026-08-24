@@ -185,6 +185,13 @@ namespace AltoLab.Database
                     ServicoId INTEGER NOT NULL REFERENCES Servicos(Id),
                     Valor NUMERIC(10,2) NOT NULL DEFAULT 0
                 );",
+                @"CREATE TABLE IF NOT EXISTS Despesas (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Descricao TEXT NOT NULL,
+                    Categoria TEXT,
+                    Valor NUMERIC(10,2) NOT NULL DEFAULT 0,
+                    DataDespesa DATETIME NOT NULL DEFAULT (datetime('now','localtime'))
+                );",
                 @"INSERT INTO Usuarios (Login, Senha, NomeCompleto)
                   VALUES ('admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Administrador AltoLab');",
                 @"INSERT INTO Servicos (Descricao, ValorPadrao) VALUES
@@ -194,7 +201,10 @@ namespace AltoLab.Database
                   ('Diagnóstico / Avaliação Técnica', 80.00);",
                 @"INSERT INTO Clientes (Nome, Telefone, Email, Endereco) VALUES
                   ('João Silva', '(11) 98888-7777', 'joao@email.com', 'Rua das Flores, 123'),
-                  ('Maria Oliveira', '(11) 97777-6666', 'maria@email.com', 'Av. Paulista, 1000');"
+                  ('Maria Oliveira', '(11) 97777-6666', 'maria@email.com', 'Av. Paulista, 1000');",
+                @"INSERT INTO Despesas (Descricao, Categoria, Valor) VALUES
+                  ('Aluguel do box', 'Fixa', 1200.00),
+                  ('Compra de HD 1TB', 'Compra de peças', 289.90);"
             };
         }
     }

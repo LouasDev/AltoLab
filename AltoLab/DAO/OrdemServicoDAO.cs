@@ -293,5 +293,70 @@ namespace AltoLab.DAO
 
             return itens;
         }
+
+        public decimal SomarFaturamentoMesAtual()
+        {
+            const string sql = @"SELECT COALESCE(SUM(ValorTotal), 0)
+                                 FROM OrdensServico
+                                 WHERE Status IN ('Concluída', 'Entregue')
+                                   AND DataConclusao >= date('now', 'start of month')
+                                   AND DataConclusao < date('now', 'start of month', '+1 month')";
+
+            try
+            {
+                using (SQLiteConnection con = ConexaoBD.ObterConexao())
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
+                {
+                    con.Open();
+                    return Convert.ToDecimal(cmd.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao calcular faturamento do mês: " + ex.Message, ex);
+            }
+        }
+
+        public int ContarAbertas()
+        {
+            const string sql = @"SELECT COUNT(*) FROM OrdensServico
+                                 WHERE Status IN ('Aberta', 'Em andamento')";
+
+            try
+            {
+                using (SQLiteConnection con = ConexaoBD.ObterConexao())
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
+                {
+                    con.Open();
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao contar OS abertas: " + ex.Message, ex);
+            }
+        }
+
+        public int ContarConcluidasMesAtual()
+        {
+            const string sql = @"SELECT COUNT(*) FROM OrdensServico
+                                 WHERE Status IN ('Concluída', 'Entregue')
+                                   AND DataConclusao >= date('now', 'start of month')
+                                   AND DataConclusao < date('now', 'start of month', '+1 month')";
+
+            try
+            {
+                using (SQLiteConnection con = ConexaoBD.ObterConexao())
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
+                {
+                    con.Open();
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao contar OS concluídas do mês: " + ex.Message, ex);
+            }
+        }
     }
 }
