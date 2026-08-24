@@ -1,116 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Windows.Forms;
 using AltoLab.DAO;
 using AltoLab.Models;
-using AltoLab.Utils;
 
 namespace AltoLab.Forms
 {
-    public class FrmClientes : Form
+    public partial class FrmClientes : Form
     {
         private int clienteSelecionadoId;
 
-        private readonly TextBox txtNome = new TextBox();
-        private readonly TextBox txtTelefone = new TextBox();
-        private readonly TextBox txtEmail = new TextBox();
-        private readonly TextBox txtEndereco = new TextBox();
-        private readonly TextBox txtBusca = new TextBox();
-        private readonly DataGridView grid = new DataGridView();
-        private readonly Button btnNovo = new Button();
-        private readonly Button btnSalvar = new Button();
-        private readonly Button btnExcluir = new Button();
-        private readonly Button btnLimpar = new Button();
-
         public FrmClientes()
         {
-            MontarTela();
+            InitializeComponent();
             CarregarGrid();
             LimparCampos();
-        }
-
-        private void MontarTela()
-        {
-            EstiloUI.EstilizarForm(this);
-            Text = "Cadastro de Clientes — AltoLab";
-            Size = new Size(900, 560);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-
-            Label lblTituloTela = new Label
-            {
-                Text = "Cadastro de Clientes",
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
-                ForeColor = EstiloUI.CorNavyEscuro,
-                AutoSize = true,
-                Location = new Point(20, 15)
-            };
-
-            Label lblBusca = new Label { Text = "Buscar por nome:", AutoSize = true, Location = new Point(430, 55) };
-            txtBusca.SetBounds(540, 51, 320, 26);
-            txtBusca.TextChanged += (s, e) => CarregarGrid(txtBusca.Text);
-
-            // --- Painel do formulário (esquerda) ---
-            GroupBox grpForm = new GroupBox
-            {
-                Text = "Dados do Cliente",
-                Location = new Point(20, 90),
-                Size = new Size(360, 300)
-            };
-
-            Label lblNome = new Label { Text = "Nome (*):", AutoSize = true, Location = new Point(15, 30) };
-            txtNome.SetBounds(15, 50, 325, 26);
-
-            Label lblTelefone = new Label { Text = "Telefone:", AutoSize = true, Location = new Point(15, 85) };
-            txtTelefone.SetBounds(15, 105, 325, 26);
-
-            Label lblEmail = new Label { Text = "E-mail:", AutoSize = true, Location = new Point(15, 140) };
-            txtEmail.SetBounds(15, 160, 325, 26);
-
-            Label lblEndereco = new Label { Text = "Endereço:", AutoSize = true, Location = new Point(15, 195) };
-            txtEndereco.SetBounds(15, 215, 325, 26);
-            txtEndereco.Multiline = false;
-
-            grpForm.Controls.AddRange(new Control[] { lblNome, txtNome, lblTelefone, txtTelefone, lblEmail, txtEmail, lblEndereco, txtEndereco });
-
-            // --- Botões ---
-            btnNovo.Text = "Novo";
-            btnNovo.SetBounds(20, 410, 82, 38);
-            EstiloUI.EstilizarBotaoSecundario(btnNovo);
-            btnNovo.Click += (s, e) => LimparCampos();
-
-            btnSalvar.Text = "Salvar";
-            btnSalvar.SetBounds(112, 410, 82, 38);
-            EstiloUI.EstilizarBotaoPrimario(btnSalvar);
-            btnSalvar.Click += BtnSalvar_Click;
-
-            btnExcluir.Text = "Excluir";
-            btnExcluir.SetBounds(204, 410, 82, 38);
-            EstiloUI.EstilizarBotaoPerigo(btnExcluir);
-            btnExcluir.Click += BtnExcluir_Click;
-
-            btnLimpar.Text = "Limpar";
-            btnLimpar.SetBounds(296, 410, 84, 38);
-            btnLimpar.FlatStyle = FlatStyle.Flat;
-            btnLimpar.Click += (s, e) => LimparCampos();
-
-            // --- Grid (direita) ---
-            EstiloUI.EstilizarGrid(grid);
-            grid.Location = new Point(400, 85);
-            grid.Size = new Size(464, 363);
-            grid.CellClick += Grid_CellClick;
-            grid.ColumnHeaderMouseClick += (s, e) => { };
-
-            Controls.Add(lblTituloTela);
-            Controls.Add(lblBusca);
-            Controls.Add(txtBusca);
-            Controls.Add(grpForm);
-            Controls.Add(btnNovo);
-            Controls.Add(btnSalvar);
-            Controls.Add(btnExcluir);
-            Controls.Add(btnLimpar);
-            Controls.Add(grid);
         }
 
         private void CarregarGrid(string filtro = "")
@@ -118,7 +23,7 @@ namespace AltoLab.Forms
             try
             {
                 ClienteDAO dao = new ClienteDAO();
-                System.Collections.Generic.List<Cliente> clientes = dao.ListarTodos(filtro);
+                List<Cliente> clientes = dao.ListarTodos(filtro);
 
                 DataTable tabela = new DataTable();
                 tabela.Columns.Add("Id", typeof(int));
@@ -131,28 +36,7 @@ namespace AltoLab.Forms
                     tabela.Rows.Add(c.Id, c.Nome, c.Telefone, c.Email);
                 }
 
-                grid.DataSource = tabela;
-
-                if (grid.Columns["Id"] != null)
-                {
-                    grid.Columns["Id"].Visible = false;
-                    grid.Columns["Id"].HeaderText = "Código";
-                }
-                if (grid.Columns["Nome"] != null)
-                {
-                    grid.Columns["Nome"].Width = 170;
-                    grid.Columns["Nome"].HeaderText = "Nome";
-                }
-                if (grid.Columns["Telefone"] != null)
-                {
-                    grid.Columns["Telefone"].Width = 110;
-                    grid.Columns["Telefone"].HeaderText = "Telefone";
-                }
-                if (grid.Columns["Email"] != null)
-                {
-                    grid.Columns["Email"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    grid.Columns["Email"].HeaderText = "E-mail";
-                }
+                dgvClientes.DataSource = tabela;
             }
             catch (Exception ex)
             {
@@ -179,6 +63,21 @@ namespace AltoLab.Forms
                 return false;
             }
             return true;
+        }
+
+        private void TxtBusca_TextChanged(object sender, EventArgs e)
+        {
+            CarregarGrid(txtBusca.Text);
+        }
+
+        private void BtnNovo_Click(object sender, EventArgs e)
+        {
+            LimparCampos();
+        }
+
+        private void BtnLimpar_Click(object sender, EventArgs e)
+        {
+            LimparCampos();
         }
 
         private void BtnSalvar_Click(object sender, EventArgs e)
@@ -260,7 +159,7 @@ namespace AltoLab.Forms
 
             try
             {
-                DataGridViewRow linha = grid.Rows[e.RowIndex];
+                DataGridViewRow linha = dgvClientes.Rows[e.RowIndex];
                 object valorId = linha.Cells["Id"].Value;
                 if (valorId == null || valorId == DBNull.Value) return;
 
