@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+
+# Banco SQLite gerado em execucao
+AltoLab/bin/Debug/AltoLabDB.db
+
+# NuGet (pacotes versionados de proposito para build offline)
+# packages/
